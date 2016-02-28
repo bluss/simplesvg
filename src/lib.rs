@@ -1,3 +1,8 @@
+//! Very simple drawing/diagramming library with svg output.
+//!
+//! Use `Fig` to build the figure and `Svg` to render the output to SVG.
+//!
+//! `Svg` implements `std::fmt::Display` for output purposes.
 use std::fmt;
 use std::fmt::Display;
 
@@ -23,15 +28,18 @@ fn replace(mut s: &str, f: &mut FnMut() -> String) -> String {
     res
 }
 
+/// Color
 #[derive(Copy, Clone, Debug, Default)]
 pub struct Color(pub u8, pub u8, pub u8);
 
+/// Style attributes
 #[derive(Copy, Clone, Debug, Default)]
 pub struct Attr {
     pub fill: Option<Color>,
     pub stroke: Option<Color>,
     pub stroke_width: Option<f32>,
     pub opacity: Option<f32>,
+    _incomplete: (),
 }
 
 impl Attr {
@@ -53,24 +61,34 @@ impl Attr {
     }
 }
 
+/// Transformations
 pub struct Trans {
     pub rot: f32,
+    _incomplete: (),
 }
 
+/// Figure parts
 #[derive(Clone, Debug)]
 pub enum Fig {
+    /// `x`, `y`, `width`, `height`
     Rect(f32, f32, f32, f32),
+    /// With style attributes
     Styled(Attr, Box<Fig>),
+    /// Bunch of figure children.
     Multiple(Vec<Fig>),
     //Transformed(Trans, Box<Fig>),
+    #[doc(hidden)]
+    __Incomplete(()),
 }
 
 impl Fig {
+    /// Apply style from `attr`.
     pub fn styled(self, attr: Attr) -> Self {
         Fig::Styled(attr, Box::new(self))
     }
 }
 
+/// SVG image object.
 #[derive(Clone, Debug)]
 pub struct Svg(pub Vec<Fig>, pub u32, pub u32);
 
@@ -109,6 +127,7 @@ impl Display for Fig {
                 }
                 Ok(())
             }
+            Fig::__Incomplete(..) => unreachable!()
         }
     }
 }
