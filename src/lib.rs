@@ -10,10 +10,11 @@ use std::rc::Rc;
 
 #[test]
 fn test() {
-    let fig = Fig::Rect(10., 10., 200., 100.);
-    let fig = fig.styled(Attr::default().fill(Color(0xff, 0, 0)));
-    let text = Fig::Text(0., 20., "XML & Stuff".to_string());
-    println!("{}", Svg(vec![fig, text], 1000, 1000));
+    let fig = Fig::Rect(10., 10., 200., 100.)
+            .styled(Attr::default().fill(Color(0xff, 0, 0)));
+    let text = Fig::Text(0., 20., "<XML & Stuff>".to_string());
+    let c = Fig::Circle(20., 20., 100.);
+    println!("{}", Svg(vec![fig, text, c], 500, 500));
 }
 
 #[test]
@@ -102,6 +103,10 @@ impl Trans {
 pub enum Fig {
     /// `x`, `y`, `width`, `height`
     Rect(f32, f32, f32, f32),
+    /// `cx`, `cy`, `radius`
+    Circle(f32, f32, f32),
+    /// `cx`, `cy`, `rx`, `ry`
+    Ellipse(f32, f32, f32, f32),
     /// `x1`, `y1`, `x2`, `y2`
     Line(f32, f32, f32, f32),
     /// Text element, `x`, `y`, `text`
@@ -191,6 +196,13 @@ impl Display for Fig {
             Fig::Line(x1, y1, x2, y2) => {
                 try!(writeln!(f, r#"<line x1="{}" y1="{}" x2="{}" y2="{}"/>"#,
                               x1, y1, x2, y2));
+            }
+            Fig::Circle(x, y, r) => {
+                try!(writeln!(f, r#"<circle x="{}" y="{}" r="{}"/>"#, x, y, r));
+            }
+            Fig::Ellipse(x, y, rx, ry) => {
+                try!(writeln!(f, r#"<ellipse x="{}" y="{}" rx="{}" ry="{}"/>"#,
+                              x, y, rx, ry));
             }
             Fig::Text(x, y, ref s) => {
                 try!(writeln!(f, r#"<text x="{}" y="{}">{}</text>"#,
