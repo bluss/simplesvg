@@ -53,6 +53,7 @@ impl Attr {
 pub struct Trans {
     pub translate: Option<(f32, f32)>,
     pub rotate: Option<f32>,
+    pub scale: Option<(f32, f32)>,
     _incomplete: (),
 }
 
@@ -63,6 +64,15 @@ impl Trans {
     }
     pub fn rotate(mut self, x: f32) -> Self {
         self.rotate = Some(x);
+        self
+    }
+    pub fn scale(mut self, x: f32) -> Self {
+        self.scale = Some((x, x));
+        self
+    }
+
+    pub fn scale_x_y(mut self, x: f32, y: f32) -> Self {
+        self.scale = Some((x, y));
         self
     }
 }
@@ -190,6 +200,13 @@ impl Display for Trans {
         }
         if let Some(x) = self.rotate {
             try!(write!(f, "rotate({}) ", x));
+        }
+        if let Some((x, y)) = self.scale {
+            if x == y {
+                try!(write!(f, "scale({}) ", x));
+            } else {
+                try!(write!(f, "scale({}, {}) ", x, y));
+            }
         }
         Ok(())
     }
