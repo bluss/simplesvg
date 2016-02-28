@@ -65,6 +65,12 @@ pub enum Fig {
     //Transformed(Trans, Box<Fig>),
 }
 
+impl Fig {
+    pub fn styled(self, attr: Attr) -> Self {
+        Fig::Styled(attr, Box::new(self))
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct Svg(pub Vec<Fig>, pub u32, pub u32);
 
