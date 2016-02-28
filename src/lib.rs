@@ -9,7 +9,7 @@ fn test() {
 }
 
 
-const SVG_BEGIN: &'static str = r##"<svg width="{}" height="{}">"##;
+const SVG_BEGIN: &'static str = r##"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg" >"##;
 const SVG_END: &'static str = r##"</svg>"##;
 
 fn replace(mut s: &str, f: &mut FnMut() -> String) -> String {
