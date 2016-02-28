@@ -3,6 +3,7 @@
 //! Use `Fig` to build the figure and `Svg` to render the output to SVG.
 //!
 //! `Svg` implements `std::fmt::Display` for output purposes.
+#![warn(variant_size_differences)]
 use std::fmt;
 use std::fmt::Display;
 use std::rc::Rc;
