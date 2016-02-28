@@ -122,7 +122,7 @@ impl Display for Attr {
             try!(write!(f, "stroke:{};", c));
         }
         if let Some(v) = self.stroke_width {
-            try!(write!(f, "stroke_width:{};", v));
+            try!(write!(f, "stroke-width:{};", v));
         }
         if let Some(v) = self.opacity {
             try!(write!(f, "opacity:{};", v));
