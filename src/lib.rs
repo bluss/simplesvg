@@ -33,7 +33,7 @@ fn replace(mut s: &str, f: &mut FnMut() -> String) -> String {
 pub struct Color(pub u8, pub u8, pub u8);
 
 /// Style attributes
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct Attr {
     pub fill: Option<Color>,
     pub stroke: Option<Color>,
@@ -62,7 +62,7 @@ impl Attr {
 }
 
 /// Transformations
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct Trans {
     pub translate: Option<(f32, f32)>,
     pub rotate: Option<f32>,
