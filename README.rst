@@ -3,6 +3,10 @@ simplesvg
 
 Very simple drawing/diagramming library with svg output.
 
+Please read the `API documentation here`__
+
+__ http://bluss.github.io/simplesvg/
+
 |build_status|_ |crates|_
 
 .. |build_status| image:: https://travis-ci.org/bluss/simplesvg.svg?branch=master
