@@ -143,7 +143,7 @@ pub struct Svg(pub Vec<Fig>, pub u32, pub u32);
 
 impl Display for Svg {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(writeln!(f, r##"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg" >"##,
+        try!(writeln!(f, r##"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg">"##,
                       self.1, self.1));
         for elt in &self.0 {
             try!(write!(f, "{}", elt));
@@ -167,11 +167,11 @@ impl Display for Fig {
                 try!(writeln!(f, "</g>"));
             }
             Fig::Rect(x, y, w, h) => {
-                try!(writeln!(f, r#"<rect x="{}" y="{}" width="{}" height="{}" />"#,
+                try!(writeln!(f, r#"<rect x="{}" y="{}" width="{}" height="{}"/>"#,
                               x, y, w, h));
             }
             Fig::Line(x1, y1, x2, y2) => {
-                try!(writeln!(f, r#"<line x1="{}" y1="{}" x2="{}" y2="{}" />"#,
+                try!(writeln!(f, r#"<line x1="{}" y1="{}" x2="{}" y2="{}"/>"#,
                               x1, y1, x2, y2));
             }
             Fig::Text(x, y, ref s) => {
