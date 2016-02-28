@@ -5,6 +5,7 @@
 //! `Svg` implements `std::fmt::Display` for output purposes.
 use std::fmt;
 use std::fmt::Display;
+use std::rc::Rc;
 
 #[test]
 fn test() {
@@ -77,8 +78,10 @@ pub enum Fig {
     Styled(Attr, Box<Fig>),
     /// With transformations
     Transformed(Trans, Box<Fig>),
-    /// Bunch of figure children.
+    /// A bunch of figure parts
     Multiple(Vec<Fig>),
+    /// Shared figure part.
+    Shared(Rc<Fig>),
     #[doc(hidden)]
     __Incomplete(()),
 }
@@ -88,8 +91,17 @@ impl Fig {
     pub fn styled(self, attr: Attr) -> Self {
         Fig::Styled(attr, Box::new(self))
     }
+
     pub fn transformed(self, trans: Trans) -> Self {
         Fig::Transformed(trans, Box::new(self))
+    }
+
+    pub fn shared(self) -> Self {
+        if let Fig::Shared(_) = self {
+            self
+        } else {
+            Fig::Shared(Rc::new(self))
+        }
     }
 }
 
@@ -135,6 +147,9 @@ impl Display for Fig {
                 for elt in figs {
                     try!(write!(f, "{}", elt));
                 }
+            }
+            Fig::Shared(ref fig) => {
+                try!(write!(f, "{}", **fig));
             }
             Fig::__Incomplete(..) => unreachable!()
         }
