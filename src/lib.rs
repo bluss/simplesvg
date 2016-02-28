@@ -85,6 +85,8 @@ impl Trans {
 pub enum Fig {
     /// `x`, `y`, `width`, `height`
     Rect(f32, f32, f32, f32),
+    /// Text element
+    Text(f32, f32, String),
     /// With style attributes
     Styled(Attr, Box<Fig>),
     /// With transformations
@@ -131,26 +133,29 @@ impl Display for Fig {
             Fig::Styled(ref attr, ref fig) => {
                 try!(writeln!(f, r##"<g style="{}">"##, attr));
                 try!(write!(f, "{}", fig));
-                writeln!(f, "</g>")
+                try!(writeln!(f, "</g>"));
             }
             Fig::Transformed(ref trans, ref fig) => {
                 try!(writeln!(f, r##"<g transform="{}">"##, trans));
                 try!(write!(f, "{}", fig));
-                writeln!(f, "</g>")
+                try!(writeln!(f, "</g>"));
             }
             Fig::Rect(x, y, w, h) => {
                 try!(writeln!(f, r#"<rect x="{}" y="{}" width="{}" height="{}" />"#,
                               x, y, w, h));
-                Ok(())
+            }
+            Fig::Text(x, y, ref s) => {
+                // FIXME: XML escape
+                try!(writeln!(f, r#"<text x="{}" y="{}">{}</text>"#, x, y, s));
             }
             Fig::Multiple(ref figs) => {
                 for elt in figs {
                     try!(write!(f, "{}", elt));
                 }
-                Ok(())
             }
             Fig::__Incomplete(..) => unreachable!()
         }
+        Ok(())
     }
 }
 
