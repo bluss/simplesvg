@@ -82,7 +82,9 @@ impl Trans {
 pub enum Fig {
     /// `x`, `y`, `width`, `height`
     Rect(f32, f32, f32, f32),
-    /// Text element
+    /// `x1`, `y1`, `x2`, `y2`
+    Line(f32, f32, f32, f32),
+    /// Text element, `x`, `y`, `text`
     Text(f32, f32, String),
     /// With style attributes
     Styled(Attr, Box<Fig>),
@@ -148,6 +150,10 @@ impl Display for Fig {
             Fig::Rect(x, y, w, h) => {
                 try!(writeln!(f, r#"<rect x="{}" y="{}" width="{}" height="{}" />"#,
                               x, y, w, h));
+            }
+            Fig::Line(x1, y1, x2, y2) => {
+                try!(writeln!(f, r#"<line x1="{}" y1="{}" x2="{}" y2="{}" />"#,
+                              x1, y1, x2, y2));
             }
             Fig::Text(x, y, ref s) => {
                 // FIXME: XML escape
