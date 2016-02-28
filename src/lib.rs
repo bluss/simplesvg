@@ -14,20 +14,6 @@ fn test() {
 }
 
 
-const SVG_BEGIN: &'static str = r##"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg" >"##;
-const SVG_END: &'static str = r##"</svg>"##;
-
-fn replace(mut s: &str, f: &mut FnMut() -> String) -> String {
-    let mut res = String::with_capacity(s.len());
-    while let Some(i) = s.find("{}") {
-        res.push_str(&s[..i]);
-        res.push_str(&f());
-        s = &s[i + 2..];
-    }
-    res.push_str(s);
-    res
-}
-
 /// Color
 #[derive(Copy, Clone, Debug, Default)]
 pub struct Color(pub u8, pub u8, pub u8);
@@ -111,18 +97,15 @@ impl Fig {
 #[derive(Clone, Debug)]
 pub struct Svg(pub Vec<Fig>, pub u32, pub u32);
 
+
 impl Display for Svg {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut i = 0;
-        let head = replace(SVG_BEGIN, &mut || {
-            i += 1;
-            if i == 1 { self.1.to_string() } else { self.2.to_string() }
-        });
-        try!(writeln!(f, "{}", head));
+        try!(writeln!(f, r##"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg" >"##,
+                      self.1, self.1));
         for elt in &self.0 {
             try!(write!(f, "{}", elt));
         }
-        try!(writeln!(f, "{}", SVG_END));
+        try!(writeln!(f, r##"</svg>"##));
         Ok(())
     }
 }
