@@ -1,10 +1,11 @@
 [package]
 name = "simplesvg"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["bluss"]
 license = "MIT/Apache-2.0"
 
 repository = "https://github.com/bluss/simplesvg"
+documentation = "http://bluss.github.io/simplesvg"
 description = "Very simple drawing/diagramming library with svg output."
 
 keywords = ["svg", "draw", "graphics"]
