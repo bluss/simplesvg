@@ -12,7 +12,8 @@ use std::rc::Rc;
 fn test() {
     let fig = Fig::Rect(10., 10., 200., 100.);
     let fig = fig.styled(Attr::default().fill(Color(0xff, 0, 0)));
-    println!("{}", Svg(vec![fig], 1000, 1000));
+    let text = Fig::Text(0., 20., "XML & Stuff".to_string());
+    println!("{}", Svg(vec![fig, text], 1000, 1000));
 }
 
 #[test]
@@ -153,6 +154,23 @@ impl Display for Svg {
     }
 }
 
+struct XmlEscape<'a>(&'a str);
+
+impl<'a> Display for XmlEscape<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let s = self.0;
+        for ch in s.chars() {
+            match ch {
+                '<' => try!(write!(f, "&lt;")),
+                '>' => try!(write!(f, "&gt;")),
+                '&' => try!(write!(f, "&amp;")),
+                c => try!(write!(f, "{}", c)),
+            }
+        }
+        Ok(())
+    }
+}
+
 impl Display for Fig {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
@@ -175,8 +193,8 @@ impl Display for Fig {
                               x1, y1, x2, y2));
             }
             Fig::Text(x, y, ref s) => {
-                // FIXME: XML escape
-                try!(writeln!(f, r#"<text x="{}" y="{}">{}</text>"#, x, y, s));
+                try!(writeln!(f, r#"<text x="{}" y="{}">{}</text>"#,
+                              x, y, XmlEscape(s)));
             }
             Fig::Multiple(ref figs) => {
                 for elt in figs {
