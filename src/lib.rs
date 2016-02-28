@@ -14,6 +14,24 @@ fn test() {
     println!("{}", Svg(vec![fig], 1000, 1000));
 }
 
+#[test]
+fn koch() {
+    // Koch snowflake fractal
+    let w = 500.;
+    let mut fig = Fig::Line(0., 0., w, 0.);
+    for _ in 0..5 {
+        let f = fig.shared();
+        let mut v = Vec::new();
+        v.push(f.clone());
+        v.push(f.clone().transformed(Trans::default().translate(w, 0.).rotate(60.)));
+        v.push(f.clone().transformed(Trans::default().translate(2. * w, 0.).rotate(120.).scale_x_y(1., -1.)));
+        v.push(f.clone().transformed(Trans::default().translate(2. * w, 0.)));
+        fig = Fig::Multiple(v).transformed(Trans::default().scale(0.333));
+    }
+    fig = fig.styled(Attr::default().stroke(Color::default()).stroke_width(100.));
+    println!("{}", Svg(vec![fig], w as u32, w as u32));
+}
+
 
 /// Color
 #[derive(Copy, Clone, Debug, Default)]
