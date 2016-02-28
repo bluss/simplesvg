@@ -9,7 +9,7 @@ use std::fmt::Display;
 #[test]
 fn test() {
     let fig = Fig::Rect(10., 10., 200., 100.);
-    let fig = Fig::Styled(Attr::default().fill(Color(0xff, 0, 0)), Box::new(fig));
+    let fig = fig.styled(Attr::default().fill(Color(0xff, 0, 0)));
     println!("{}", Svg(vec![fig], 1000, 1000));
 }
 
@@ -62,9 +62,22 @@ impl Attr {
 }
 
 /// Transformations
+#[derive(Copy, Clone, Debug, Default)]
 pub struct Trans {
-    pub rot: f32,
+    pub translate: Option<(f32, f32)>,
+    pub rotate: Option<f32>,
     _incomplete: (),
+}
+
+impl Trans {
+    pub fn translate(mut self, x: f32, y: f32) -> Self {
+        self.translate = Some((x, y));
+        self
+    }
+    pub fn rotate(mut self, x: f32) -> Self {
+        self.rotate = Some(x);
+        self
+    }
 }
 
 /// Figure parts
@@ -74,9 +87,10 @@ pub enum Fig {
     Rect(f32, f32, f32, f32),
     /// With style attributes
     Styled(Attr, Box<Fig>),
+    /// With transformations
+    Transformed(Trans, Box<Fig>),
     /// Bunch of figure children.
     Multiple(Vec<Fig>),
-    //Transformed(Trans, Box<Fig>),
     #[doc(hidden)]
     __Incomplete(()),
 }
@@ -85,6 +99,9 @@ impl Fig {
     /// Apply style from `attr`.
     pub fn styled(self, attr: Attr) -> Self {
         Fig::Styled(attr, Box::new(self))
+    }
+    pub fn transformed(self, trans: Trans) -> Self {
+        Fig::Transformed(trans, Box::new(self))
     }
 }
 
@@ -116,6 +133,11 @@ impl Display for Fig {
                 try!(write!(f, "{}", fig));
                 writeln!(f, "</g>")
             }
+            Fig::Transformed(ref trans, ref fig) => {
+                try!(writeln!(f, r##"<g transform="{}">"##, trans));
+                try!(write!(f, "{}", fig));
+                writeln!(f, "</g>")
+            }
             Fig::Rect(x, y, w, h) => {
                 try!(writeln!(f, r#"<rect x="{}" y="{}" width="{}" height="{}" />"#,
                               x, y, w, h));
@@ -140,6 +162,7 @@ impl Display for Color {
 
 impl Display for Attr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // `;` are separators
         if let Some(c) = self.fill {
             try!(write!(f, "fill:{};", c));
         }
@@ -151,6 +174,19 @@ impl Display for Attr {
         }
         if let Some(v) = self.opacity {
             try!(write!(f, "opacity:{};", v));
+        }
+        Ok(())
+    }
+}
+
+impl Display for Trans {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // spaces are separators
+        if let Some((x, y)) = self.translate {
+            try!(write!(f, "translate({}, {}) ", x, y));
+        }
+        if let Some(x) = self.rotate {
+            try!(write!(f, "rotate({}) ", x));
         }
         Ok(())
     }
