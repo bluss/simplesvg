@@ -47,6 +47,7 @@ pub struct Attr {
     pub stroke: Option<Color>,
     pub stroke_width: Option<f32>,
     pub opacity: Option<f32>,
+    pub font_family: Option<&'static str>,
     _incomplete: (),
 }
 
@@ -65,6 +66,10 @@ impl Attr {
     }
     pub fn opacity(mut self, c: f32) -> Self {
         self.opacity = Some(c);
+        self
+    }
+    pub fn font_family(mut self, c: &'static str) -> Self {
+        self.font_family = Some(c);
         self
     }
 }
@@ -242,6 +247,9 @@ impl Display for Attr {
         }
         if let Some(v) = self.opacity {
             try!(write!(f, "opacity:{};", v));
+        }
+        if let Some(v) = self.font_family {
+            try!(write!(f, "font-family:{};", v));
         }
         Ok(())
     }
