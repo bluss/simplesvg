@@ -14,7 +14,7 @@ fn test() {
             .styled(Attr::default().fill(Color(0xff, 0, 0)));
     let text = Fig::Text(0., 20., "<XML & Stuff>".to_string());
     let c = Fig::Circle(20., 20., 100.);
-    println!("{}", Svg(vec![fig, text, c], 500, 500));
+    println!("{}", Svg(vec![fig, text, c], 500, 600));
 }
 
 #[test]
@@ -155,7 +155,7 @@ pub struct Svg(pub Vec<Fig>, pub u32, pub u32);
 impl Display for Svg {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         try!(writeln!(f, r##"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg">"##,
-                      self.1, self.1));
+                      self.1, self.2));
         for elt in &self.0 {
             try!(write!(f, "{}", elt));
         }
