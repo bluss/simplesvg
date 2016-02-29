@@ -1,8 +1,8 @@
-//! Very simple drawing/diagramming library with svg output.
+//! Very simple drawing/diagramming library with SVG output.
 //!
 //! Use `Fig` to build the figure and `Svg` to render the output to SVG.
 //!
-//! `Svg` implements `std::fmt::Display` for output purposes.
+//! `Svg` implements `std::fmt::Display` and `ToString` for output purposes.
 #![warn(variant_size_differences)]
 use std::fmt;
 use std::fmt::Display;
@@ -134,10 +134,12 @@ impl Fig {
         Fig::Styled(attr, Box::new(self))
     }
 
+    /// Apply transformations from `trans`
     pub fn transformed(self, trans: Trans) -> Self {
         Fig::Transformed(trans, Box::new(self))
     }
 
+    /// Turn self into a `Fig::Shared`.
     pub fn shared(self) -> Self {
         if let Fig::Shared(_) = self {
             self
@@ -148,6 +150,9 @@ impl Fig {
 }
 
 /// SVG image object.
+///
+/// The image object is a list of figures and the width and height
+/// of the bounding box.
 #[derive(Clone, Debug)]
 pub struct Svg(pub Vec<Fig>, pub u32, pub u32);
 
