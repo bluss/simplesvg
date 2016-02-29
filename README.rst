@@ -19,6 +19,11 @@ __ http://bluss.github.io/simplesvg/
 Recent Changes
 --------------
 
+- 0.3.0
+
+  - Transformations are now an ordered sequence.
+    The sequence .rotate(x).translate(x, y) behaves as if the transformations
+    are nested like ``<g transform="translate(x, y)"> <g transform="rotate(x)">``.
 
 License
 =======
