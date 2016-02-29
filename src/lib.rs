@@ -26,8 +26,8 @@ fn koch() {
         let f = fig.shared();
         let mut v = Vec::new();
         v.push(f.clone());
-        v.push(f.clone().transformed(Trans::default().translate(w, 0.).rotate(60.)));
-        v.push(f.clone().transformed(Trans::default().translate(2. * w, 0.).rotate(120.).scale_x_y(1., -1.)));
+        v.push(f.clone().transformed(Trans::default().rotate(60.).translate(w, 0.)));
+        v.push(f.clone().transformed(Trans::default().scale_x_y(1., -1.).rotate(120.).translate(2. * w, 0.)));
         v.push(f.clone().transformed(Trans::default().translate(2. * w, 0.)));
         fig = Fig::Multiple(v).transformed(Trans::default().scale(0.333));
     }
@@ -74,32 +74,42 @@ impl Attr {
     }
 }
 
-/// Transformations
+/// Transformations.
+///
+/// Transformations are emitted in the order they were specified.
 #[derive(Clone, Debug, Default)]
 pub struct Trans {
-    pub translate: Option<(f32, f32)>,
-    pub rotate: Option<f32>,
-    pub scale: Option<(f32, f32)>,
-    _incomplete: (),
+    transforms: Vec<Transform>,
 }
 
+#[derive(Clone, Debug)]
+enum Transform {
+    Translate(f32, f32),
+    Scale(f32, f32),
+    Rotate(f32),
+}
+use Transform::*;
+
 impl Trans {
-    pub fn translate(mut self, x: f32, y: f32) -> Self {
-        self.translate = Some((x, y));
-        self
-    }
-    pub fn rotate(mut self, x: f32) -> Self {
-        self.rotate = Some(x);
-        self
-    }
-    pub fn scale(mut self, x: f32) -> Self {
-        self.scale = Some((x, x));
+    fn push(mut self, t: Transform) -> Self {
+        self.transforms.push(t);
         self
     }
 
-    pub fn scale_x_y(mut self, x: f32, y: f32) -> Self {
-        self.scale = Some((x, y));
-        self
+    pub fn translate(self, x: f32, y: f32) -> Self {
+        self.push(Translate(x, y))
+    }
+
+    pub fn rotate(self, x: f32) -> Self {
+        self.push(Rotate(x))
+    }
+
+    pub fn scale(self, x: f32) -> Self {
+        self.push(Scale(x, x))
+    }
+
+    pub fn scale_x_y(self, x: f32, y: f32) -> Self {
+        self.push(Scale(x, y))
     }
 }
 
@@ -263,17 +273,19 @@ impl Display for Attr {
 impl Display for Trans {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // spaces are separators
-        if let Some((x, y)) = self.translate {
-            try!(write!(f, "translate({}, {}) ", x, y));
-        }
-        if let Some(x) = self.rotate {
-            try!(write!(f, "rotate({}) ", x));
-        }
-        if let Some((x, y)) = self.scale {
-            if x == y {
-                try!(write!(f, "scale({}) ", x));
-            } else {
-                try!(write!(f, "scale({}, {}) ", x, y));
+        // transforms are applied reverse of the order they were pushed
+        // to the vector.
+        for transform in self.transforms.iter().rev() {
+            match *transform {
+                Translate(x, y) => try!(write!(f, "translate({}, {}) ", x, y)),
+                Rotate(x) => try!(write!(f, "rotate({}) ", x)),
+                Scale(x, y) => {
+                    if x == y {
+                        try!(write!(f, "scale({}) ", x));
+                    } else {
+                        try!(write!(f, "scale({}, {}) ", x, y));
+                    }
+                }
             }
         }
         Ok(())
