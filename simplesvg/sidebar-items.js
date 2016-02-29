@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Fig","Figure parts"]],"struct":[["Attr","Style attributes"],["Color","Color"],["Svg","SVG image object."],["Trans","Transformations."]]});
