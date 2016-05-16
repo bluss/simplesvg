@@ -135,7 +135,13 @@ pub enum Fig {
     /// Shared figure part.
     Shared(Rc<Fig>),
     #[doc(hidden)]
-    __Incomplete(()),
+    __Incomplete(internal::Void),
+}
+
+mod internal {
+    #[doc(hidden)]
+    #[derive(Clone, Debug)]
+    pub enum Void {}
 }
 
 impl Fig {
@@ -236,7 +242,7 @@ impl Display for Fig {
             Fig::Shared(ref fig) => {
                 try!(write!(f, "{}", **fig));
             }
-            Fig::__Incomplete(..) => unreachable!()
+            Fig::__Incomplete(ref void) => match *void { } // unreachable
         }
         Ok(())
     }
