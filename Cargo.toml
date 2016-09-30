@@ -5,7 +5,7 @@ authors = ["bluss"]
 license = "MIT/Apache-2.0"
 
 repository = "https://github.com/bluss/simplesvg"
-documentation = "http://bluss.github.io/simplesvg"
+documentation = "https://docs.rs/simplesvg/"
 description = "Very simple drawing/diagramming library with svg output."
 
 keywords = ["svg", "draw", "graphics"]
