@@ -5,7 +5,7 @@ Very simple drawing/diagramming library with svg output.
 
 Please read the `API documentation here`__
 
-__ http://bluss.github.io/simplesvg/
+__ https://docs.rs/simplesvg/
 
 |build_status|_ |crates|_
 
@@ -18,6 +18,10 @@ __ http://bluss.github.io/simplesvg/
 
 Recent Changes
 --------------
+
+- 0.3.1
+
+  - Update doc link
 
 - 0.3.0
 
