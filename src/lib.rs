@@ -225,10 +225,10 @@ impl Display for Fig {
                               x1, y1, x2, y2));
             }
             Fig::Circle(x, y, r) => {
-                try!(writeln!(f, r#"<circle x="{}" y="{}" r="{}"/>"#, x, y, r));
+                try!(writeln!(f, r#"<circle cx="{}" cy="{}" r="{}"/>"#, x, y, r));
             }
             Fig::Ellipse(x, y, rx, ry) => {
-                try!(writeln!(f, r#"<ellipse x="{}" y="{}" rx="{}" ry="{}"/>"#,
+                try!(writeln!(f, r#"<ellipse cx="{}" cy="{}" rx="{}" ry="{}"/>"#,
                               x, y, rx, ry));
             }
             Fig::Text(x, y, ref s) => {
