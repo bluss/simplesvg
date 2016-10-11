@@ -41,7 +41,12 @@ fn koch() {
 #[derive(Copy, Clone, Debug)]
 pub enum ColorAttr {
     Color(u8, u8, u8),
-    ColorNone
+    ColorNone,
+}
+
+/// The default color is `ColorNone`
+impl Default for ColorAttr {
+    fn default() -> Self { ColorNone }
 }
 
 pub use ColorAttr::*;
@@ -258,7 +263,7 @@ impl Display for ColorAttr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 	match *self {
           Color(r, g, b) => write!(f, "#{:02x}{:02x}{:02x}", r, g, b),
-          ColorNone => write!(f, "none")
+          ColorNone => write!(f, "none"),
         }
     }
 }
