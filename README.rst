@@ -19,6 +19,11 @@ __ https://docs.rs/simplesvg/
 Recent Changes
 --------------
 
+- 0.4.0
+
+  - Fix circle and ellipse drawing
+  - Add ability to use "none" as color
+
 - 0.3.1
 
   - Update doc link

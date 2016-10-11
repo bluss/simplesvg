@@ -3,7 +3,7 @@
 //! Use `Fig` to build the figure and `Svg` to render the output to SVG.
 //!
 //! `Svg` implements `std::fmt::Display` and `ToString` for output purposes.
-#![doc(html_root_url="https://docs.rs/simplesvg/0.3/")]
+#![doc(html_root_url="https://docs.rs/simplesvg/0.4/")]
 #![warn(variant_size_differences)]
 use std::fmt;
 use std::fmt::Display;
