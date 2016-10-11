@@ -32,20 +32,25 @@ fn koch() {
         v.push(f.clone().transformed(Trans::default().translate(2. * w, 0.)));
         fig = Fig::Multiple(v).transformed(Trans::default().scale(0.333));
     }
-    fig = fig.styled(Attr::default().stroke(Color::default()).stroke_width(100.));
+    fig = fig.styled(Attr::default().stroke(Color(0, 0, 0)).stroke_width(100.));
     println!("{}", Svg(vec![fig], w as u32, w as u32));
 }
 
 
 /// Color
-#[derive(Copy, Clone, Debug, Default)]
-pub struct Color(pub u8, pub u8, pub u8);
+#[derive(Copy, Clone, Debug)]
+pub enum ColorAttr {
+    Color(u8, u8, u8),
+    ColorNone
+}
+
+pub use ColorAttr::*;
 
 /// Style attributes
 #[derive(Clone, Debug, Default)]
 pub struct Attr {
-    pub fill: Option<Color>,
-    pub stroke: Option<Color>,
+    pub fill: Option<ColorAttr>,
+    pub stroke: Option<ColorAttr>,
     pub stroke_width: Option<f32>,
     pub opacity: Option<f32>,
     pub font_family: Option<&'static str>,
@@ -53,11 +58,11 @@ pub struct Attr {
 }
 
 impl Attr {
-    pub fn fill(mut self, c: Color) -> Self {
+    pub fn fill(mut self, c: ColorAttr) -> Self {
         self.fill = Some(c);
         self
     }
-    pub fn stroke(mut self, c: Color) -> Self {
+    pub fn stroke(mut self, c: ColorAttr) -> Self {
         self.stroke = Some(c);
         self
     }
@@ -249,9 +254,12 @@ impl Display for Fig {
     }
 }
 
-impl Display for Color {
+impl Display for ColorAttr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "#{:02x}{:02x}{:02x}", self.0, self.1, self.2)
+	match *self {
+          Color(r, g, b) => write!(f, "#{:02x}{:02x}{:02x}", r, g, b),
+          ColorNone => write!(f, "none")
+        }
     }
 }
 
